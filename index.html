@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>投稿の確認</title>
+<style>
+:root{
+  --bg:#F2F2F7;--card:#FFFFFF;--text:#1C1C1E;--sub:#6C6C70;--line:#E2E2E7;
+  --accent:#E8572A;--accent-weak:#FCE9E1;--ok:#1F9D55;--ok-weak:#E3F5EA;--fix:#C77700;--fix-weak:#FFF1D6;
+  --ng:#8E8E93;--ng-weak:#EDEDF0;--x:#111111;--ig:#C1358D;--radius:16px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000000;--card:#1C1C1E;--text:#F2F2F7;--sub:#A1A1A8;--line:#2C2C30;
+  --accent:#FF8A4C;--accent-weak:#3A2318;--ok:#3DD47A;--ok-weak:#163323;--fix:#FFB340;--fix-weak:#3A2C10;
+  --ng:#8E8E93;--ng-weak:#2C2C30;--x:#F2F2F7;--ig:#F06CBF;
+}}
+:root[data-theme="dark"]{
+  --bg:#000000;--card:#1C1C1E;--text:#F2F2F7;--sub:#A1A1A8;--line:#2C2C30;
+  --accent:#FF8A4C;--accent-weak:#3A2318;--ok:#3DD47A;--ok-weak:#163323;--fix:#FFB340;--fix-weak:#3A2C10;
+  --ng:#8E8E93;--ng-weak:#2C2C30;--x:#F2F2F7;--ig:#F06CBF;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;font-size:16px;line-height:1.55;padding:0 16px calc(96px + env(safe-area-inset-bottom))}
+::-webkit-scrollbar{display:none}html{scrollbar-width:none}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 0 10px;display:flex;align-items:center;gap:8px}
+h1{font-size:22px;font-weight:800;flex:1}
+select,button,input,textarea{font:inherit;color:inherit}
+select{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.iconbtn{background:var(--card);border:1px solid var(--line);border-radius:999px;width:38px;height:38px;display:grid;place-items:center;font-weight:700}
+main{max-width:640px;margin:0 auto}
+.summary{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;color:var(--sub);font-size:14px;margin:4px 0 8px}
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px;font-size:13px}
+.chip{border-radius:999px;padding:3px 10px;font-weight:700;font-size:12px;background:var(--ng-weak);color:var(--sub)}
+.chip.ok{background:var(--ok-weak);color:var(--ok)}.chip.fix{background:var(--fix-weak);color:var(--fix)}.chip.ng{background:var(--ng-weak);color:var(--ng)}
+.chip.posted{background:var(--accent-weak);color:var(--accent)}
+.day{margin:18px 0 8px;font-weight:800;font-size:17px}
+.post{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.post.s-ok{border-color:var(--ok)}.post.s-fix{border-color:var(--fix)}.post.s-ng{opacity:.6}
+.top{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.plat{font-weight:800;font-size:13px}.plat.x{color:var(--x)}.plat.instagram{color:var(--ig)}
+.aim{font-size:13px;color:var(--sub);margin-bottom:8px}
+.img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px;background:var(--bg);display:block;margin-bottom:10px;cursor:zoom-in}
+textarea,input[type=text],input[type=password]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+textarea.body{min-height:110px}
+.count{font-size:12px;color:var(--sub);text-align:right;margin:4px 2px 8px}.count.over{color:#D92D20;font-weight:700}
+.label{font-size:12px;color:var(--sub);margin:6px 2px 4px}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.act{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 0;font-weight:700}
+.act[aria-pressed="true"].ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.act[aria-pressed="true"].fix{background:var(--fix);border-color:var(--fix);color:#fff}
+.act[aria-pressed="true"].ng{background:var(--ng);border-color:var(--ng);color:#fff}
+.comment{margin-top:8px}
+.posted-note{font-size:13px;color:var(--accent);font-weight:700;margin-top:8px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;gap:8px;justify-content:center;z-index:6}
+.bar .inner{max-width:640px;width:100%;display:flex;gap:8px}
+.primary{flex:1;background:var(--accent);color:#fff;border:0;border-radius:14px;padding:13px;font-weight:800;font-size:16px}
+.primary:disabled{opacity:.45}
+.secondary{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-weight:700}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:12px}
+.panel h2{font-size:18px;margin-bottom:8px}.panel p{font-size:14px;color:var(--sub);margin-bottom:10px}
+.panel .primary{width:100%;margin-top:12px}
+.msg{font-size:14px;margin:10px 2px;color:var(--sub)}.msg.err{color:#D92D20}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:700;font-size:14px;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;place-items:center;z-index:10;padding:16px}
+.zoom.show{display:grid}.zoom img{max-width:100%;max-height:100%;border-radius:12px}
+.help{font-size:13px;color:var(--sub)}.help li{margin-left:18px;margin-bottom:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>投稿の確認</h1>
+  <select id="week" aria-label="週を選ぶ" hidden></select>
+  <button class="iconbtn" id="helpBtn" aria-label="使い方を見る">?</button>
+  <button class="iconbtn" id="setBtn" aria-label="設定を開く">⚙</button>
+</header>
+<main id="app"><p class="msg">読み込み中…</p></main>
+<div class="bar" id="bar" hidden><div class="inner">
+  <button class="secondary" id="allOk" aria-label="まだ決めていない投稿をすべてOKにする">残りを全部OK</button>
+  <button class="primary" id="save" disabled aria-label="確認の結果を保存する">保存</button>
+</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="zoom" id="zoom" role="dialog" aria-label="画像を大きく表示"><img alt="投稿の画像（拡大）"></div>
+
+<script>
+'use strict';
+// ---- 保存場所（このスマホのブラウザだけ。使えなくても動くようにする） ----
+const store = {
+  get(k){ try{ return localStorage.getItem(k) }catch{ return null } },
+  set(k,v){ try{ localStorage.setItem(k,v) }catch{} },
+  del(k){ try{ localStorage.removeItem(k) }catch{} },
+};
+const params = new URLSearchParams(location.search);
+const LOCAL = params.has('local'); // 手元の確認用（npm run serve）
+const KIND = { aruaru:'あるある', story:'実話・コツ', promo:'宣伝' };
+const PLAT = { x:'X', instagram:'Instagram' };
+const WD = ['日','月','火','水','木','金','土'];
+const STATUS = { ok:'OK', fix:'直してほしい', ng:'使わない' };
+
+const $ = (s,el=document)=>el.querySelector(s);
+const el = (tag, attrs={}, ...kids)=>{
+  const n=document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs)){
+    if(k==='class') n.className=v; else if(k.startsWith('on')) n.addEventListener(k.slice(2),v);
+    else if(v===true) n.setAttribute(k,''); else if(v!==false && v!=null) n.setAttribute(k,v);
+  }
+  for(const c of kids.flat()) if(c!=null) n.append(c.nodeType?c:document.createTextNode(c));
+  return n;
+};
+function toast(t){ const n=$('#toast'); n.textContent=t; n.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>n.classList.remove('show'),1800); }
+
+// X の数え方（日本語・絵文字は 2）
+function xLength(text){ let n=0; for(const ch of text){ const c=ch.codePointAt(0);
+  n += (c<=0x10ff||(c>=0x2000&&c<=0x200d)||(c>=0x2010&&c<=0x201f)||(c>=0x2032&&c<=0x2037))?1:2 } return n }
+
+// ---- UTF-8 と base64 ----
+function b64encode(str){ const bytes=new TextEncoder().encode(str); let bin=''; for(let i=0;i<bytes.length;i+=0x8000) bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000)); return btoa(bin) }
+function b64decode(b64){ const bin=atob(b64.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); return new TextDecoder().decode(bytes) }
+
+// ---- データの読み書き（GitHub か、手元の確認用サーバー） ----
+const api = {
+  get repo(){ return store.get('repo') || '' },
+  get token(){ return store.get('token') || '' },
+  get branch(){ return store.get('branch') || 'main' },
+  async gh(path, opts={}){
+    const res = await fetch(`https://api.github.com/repos/${this.repo}/contents/${path}${opts.method?'':`?ref=${encodeURIComponent(this.branch)}`}`, {
+      method: opts.method||'GET',
+      headers: { Authorization:`Bearer ${this.token}`, Accept: opts.raw?'application/vnd.github.raw+json':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28', ...(opts.body?{'Content-Type':'application/json'}:{}) },
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+    if(res.status===404) return null;
+    if(!res.ok){ const e=new Error(`GitHub ${res.status}`); e.status=res.status; throw e }
+    return res;
+  },
+  async weeks(){
+    if(LOCAL) return (await fetch('/api/weeks')).json();
+    const r = await this.gh('drafts'); if(!r) return [];
+    return (await r.json()).filter(f=>f.type==='dir' && /^\d{4}-W\d{2}$/.test(f.name)).map(f=>f.name).sort();
+  },
+  async week(w){
+    if(LOCAL) return (await fetch(`/drafts/${w}/week.json`)).json();
+    const r = await this.gh(`drafts/${w}/week.json`,{raw:true}); return r ? r.json() : null;
+  },
+  async image(w,id){
+    if(LOCAL) return `/drafts/${w}/images/${id}.png`;
+    const r = await this.gh(`drafts/${w}/images/${id}.png`,{raw:true}); return r ? URL.createObjectURL(await r.blob()) : null;
+  },
+  async approvals(w){
+    if(LOCAL){ const r=await fetch(`/approvals/${w}.json`); return { data: r.ok ? await r.json() : {posts:{}}, sha:null } }
+    const r = await this.gh(`approvals/${w}.json`); if(!r) return { data:{posts:{}}, sha:null };
+    const j = await r.json(); return { data: JSON.parse(b64decode(j.content)), sha:j.sha };
+  },
+  async saveApprovals(w, data, sha){
+    const text = JSON.stringify(data, null, 2) + '\n';
+    if(LOCAL){ const r=await fetch(`/api/approvals/${w}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:text}); if(!r.ok) throw new Error('保存に失敗'); return null }
+    const r = await this.gh(`approvals/${w}.json`,{ method:'PUT', body:{ message:`確認の結果を保存（${w}）`, content:b64encode(text), branch:this.branch, ...(sha?{sha}:{}) } });
+    return (await r.json()).content.sha;
+  },
+  async config(){
+    if(LOCAL){ const r=await fetch('/config.json'); return r.ok ? r.json() : {} }
+    const r = await this.gh('config.json',{raw:true}); return r ? r.json() : {};
+  },
+  async posted(){
+    if(LOCAL){ const r=await fetch('/posted/log.json'); return r.ok ? r.json() : {} }
+    const r = await this.gh('posted/log.json',{raw:true}); return r ? r.json() : {};
+  },
+};
+
+// ---- 状態 ----
+let S = { weeks:[], week:null, data:null, approvals:{posts:{}}, sha:null, posted:{}, dirty:new Set(), images:{} };
+
+function approvalOf(id){ return S.approvals.posts[id] || (S.approvals.posts[id] = {}) }
+function markDirty(id){ S.dirty.add(id); renderBar(); }
+
+// ---- 画面 ----
+function renderSettings(msg){
+  $('#bar').hidden = true; $('#week').hidden = true;
+  const repo = el('input',{type:'text',id:'repo',value:api.repo,placeholder:'例: yourname/kintore-kun-marketing','aria-label':'下書きのリポジトリ',autocomplete:'off',autocapitalize:'off'});
+  const token = el('input',{type:'password',id:'token',value:api.token,placeholder:'github_pat_…','aria-label':'GitHub のトークン',autocomplete:'off'});
+  const app = $('#app'); app.replaceChildren(
+    el('div',{class:'panel'},
+      el('h2',{},'はじめの設定'),
+      el('p',{},'下書きが入っている非公開のリポジトリと、そのリポジトリだけを読み書きできる GitHub のトークンを入れてください。トークンはこのスマホのブラウザの中にだけ保存されます。'),
+      el('div',{class:'label'},'リポジトリ（owner/name）'), repo,
+      el('div',{class:'label'},'トークン'), token,
+      msg ? el('p',{class:'msg err'},msg) : null,
+      el('button',{class:'primary','aria-label':'設定を保存して下書きを読み込む',onclick:()=>{ store.set('repo',repo.value.trim()); store.set('token',token.value.trim()); start(); }},'保存して読み込む'),
+      api.token ? el('button',{class:'secondary',style:'width:100%;margin-top:8px','aria-label':'このスマホからトークンを消す',onclick:()=>{ store.del('token'); renderSettings('トークンを消しました。'); }},'トークンを消す') : null,
+    ));
+}
+
+function renderHelp(){
+  const back = el('button',{class:'primary','aria-label':'下書きの一覧に戻る',onclick:()=>renderWeek()},'下書きに戻る');
+  $('#bar').hidden = true;
+  $('#app').replaceChildren(el('div',{class:'panel help'},
+    el('h2',{},'使い方'),
+    el('ul',{},
+      el('li',{},'毎週日曜の朝に、次の週（月〜日）の下書きが届きます。'),
+      el('li',{},'「OK」にした投稿だけが、その日の朝7時（日本時間）ごろに自動で投稿されます。7時を過ぎてから OK にした今日の分は、次の自動投稿（翌朝）では出ません。'),
+      el('li',{},'文はその場で直せます。直した文で投稿されます。'),
+      el('li',{},'「直してほしい」「使わない」は投稿されません。コメントは次の週の下書き作りに使われます（同じ注意を2回しなくて済むように）。'),
+      el('li',{},'最後に下の「保存」を押してください。押すまで結果は残りません。'),
+    ), back));
+}
+
+function renderBar(){
+  $('#bar').hidden = false;
+  const n = S.dirty.size; const b = $('#save');
+  b.disabled = n===0; b.textContent = n ? `保存（${n}件）` : '保存済み';
+}
+
+function postCard(p){
+  const a = approvalOf(p.id);
+  const posted = S.posted[p.id];
+  const status = a.status || '';
+  const card = el('article',{class:`post ${status?'s-'+status:''}`,'aria-label':`${p.date} ${PLAT[p.platform]} の下書き`});
+  const top = el('div',{class:'top'},
+    el('span',{class:`plat ${p.platform}`},PLAT[p.platform]),
+    el('span',{class:'chip'},KIND[p.kind]||p.kind),
+    status ? el('span',{class:`chip ${status}`},STATUS[status]) : el('span',{class:'chip'},'未確認'),
+    posted ? el('span',{class:'chip posted'},'投稿済み') : null);
+  card.append(top);
+  if(p.aim) card.append(el('div',{class:'aim'},`ねらい：${p.aim}`));
+
+  if(p.platform==='instagram'){
+    const img = el('img',{class:'img',alt:`${p.date} の Instagram の画像`,loading:'lazy'});
+    api.image(S.week,p.id).then(src=>{ if(src){ img.src=src } else img.replaceWith(el('p',{class:'msg'},'画像がまだありません')) }).catch(()=>{});
+    img.addEventListener('click',()=>{ $('#zoom img').src=img.src; $('#zoom').classList.add('show') });
+    card.append(img);
+  }
+
+  const body = el('textarea',{class:'body','aria-label':'投稿する文（直せます）',disabled:!!posted});
+  body.value = a.text ?? p.text;
+  const count = el('div',{class:'count'});
+  const updateCount = ()=>{
+    if(p.platform==='x'){ const n=xLength(body.value.replaceAll('{app}', S.appName)); count.textContent=`${n} / 280（日本語は1字＝2）`; count.classList.toggle('over',n>280) }
+    else { count.textContent=`${body.value.length} 字` }
+  };
+  body.addEventListener('input',()=>{ a.text = body.value===p.text ? undefined : body.value; updateCount(); markDirty(p.id) });
+  updateCount();
+  card.append(el('div',{class:'label'},p.platform==='instagram'?'キャプション':'本文'), body, count);
+
+  if(p.platform==='instagram'){
+    const tags = el('input',{type:'text','aria-label':'ハッシュタグ（空白で区切る）',disabled:!!posted});
+    tags.value = (a.hashtags ?? p.hashtags ?? []).map(t=>t.startsWith('#')?t:'#'+t).join(' ');
+    tags.addEventListener('input',()=>{ const v=tags.value.split(/\s+/).filter(Boolean).map(t=>t.replace(/^#/,'')); a.hashtags = JSON.stringify(v)===JSON.stringify(p.hashtags||[]) ? undefined : v; markDirty(p.id) });
+    card.append(el('div',{class:'label'},'ハッシュタグ'), tags);
+  }
+
+  const comment = el('textarea',{class:'comment','aria-label':'コメント（直してほしいところ・次から気をつけてほしいこと）',placeholder:'コメント（任意）：直してほしいところ、次から気をつけてほしいこと',rows:2});
+  comment.value = a.comment || '';
+  comment.addEventListener('input',()=>{ a.comment = comment.value || undefined; markDirty(p.id) });
+
+  const actions = el('div',{class:'actions'});
+  for(const s of ['ok','fix','ng']){
+    actions.append(el('button',{class:`act ${s}`,'aria-pressed':String(status===s),'aria-label':`この投稿を「${STATUS[s]}」にする`,disabled:!!posted,
+      onclick:()=>{ a.status = a.status===s ? undefined : s; a.decidedAt = new Date().toISOString(); markDirty(p.id); renderWeek(); }},STATUS[s]));
+  }
+  card.append(actions, comment);
+  if(posted) card.append(el('div',{class:'posted-note'},`投稿済み（${new Date(posted.at).toLocaleString('ja-JP')}）`));
+  return card;
+}
+
+function renderWeek(){
+  const d = S.data; const app = $('#app');
+  if(!d){ app.replaceChildren(el('p',{class:'msg'},'下書きがまだありません。')); $('#bar').hidden=true; return }
+  const sel = $('#week'); sel.hidden = false;
+  sel.replaceChildren(...S.weeks.map(w=>el('option',{value:w,selected:w===S.week},w)));
+  const counts = {ok:0,fix:0,ng:0,none:0};
+  d.posts.forEach(p=>{ const s=S.approvals.posts[p.id]?.status; counts[s||'none']++ });
+  const kids = [];
+  if(d.summary) kids.push(el('div',{class:'summary'},d.summary));
+  kids.push(el('div',{class:'progress'},
+    el('span',{class:'chip ok'},`OK ${counts.ok}`), el('span',{class:'chip fix'},`直して ${counts.fix}`),
+    el('span',{class:'chip ng'},`使わない ${counts.ng}`), el('span',{class:'chip'},`未確認 ${counts.none}`)));
+  const byDate = {};
+  for(const p of d.posts) (byDate[p.date] ||= []).push(p);
+  for(const date of Object.keys(byDate).sort()){
+    const [y,m,dd] = date.split('-').map(Number);
+    const wd = WD[new Date(Date.UTC(y,m-1,dd)).getUTCDay()];
+    kids.push(el('h2',{class:'day'},`${m}/${dd}（${wd}）`));
+    const order = { x:0, instagram:1 };
+    byDate[date].sort((a,b)=>order[a.platform]-order[b.platform]).forEach(p=>kids.push(postCard(p)));
+  }
+  app.replaceChildren(...kids);
+  renderBar();
+}
+
+async function loadWeek(w){
+  if(S.dirty.size && !confirm('保存していない変更があります。破棄して別の週を開きますか？')) { $('#week').value=S.week; return }
+  S.week = w; S.dirty.clear();
+  $('#app').replaceChildren(el('p',{class:'msg'},'読み込み中…'));
+  const [data, ap, posted] = await Promise.all([api.week(w), api.approvals(w), api.posted()]);
+  S.data = data; S.approvals = ap.data; S.approvals.posts ||= {}; S.sha = ap.sha; S.posted = posted || {};
+  renderWeek();
+}
+
+async function save(){
+  const b = $('#save'); b.disabled = true; b.textContent = '保存中';
+  try{
+    // ほかの端末での変更と混ぜる：今の内容を読み直し、変えた投稿だけ上書きする
+    const latest = await api.approvals(S.week);
+    const merged = latest.data; merged.posts ||= {};
+    for(const id of S.dirty){
+      const a = S.approvals.posts[id] || {};
+      const clean = Object.fromEntries(Object.entries(a).filter(([,v])=>v!==undefined && v!==''));
+      if(Object.keys(clean).length) merged.posts[id] = clean; else delete merged.posts[id];
+    }
+    merged.updatedAt = new Date().toISOString();
+    S.sha = await api.saveApprovals(S.week, merged, latest.sha);
+    S.approvals = merged; S.dirty.clear();
+    toast('保存しました'); renderWeek();
+  }catch(e){
+    toast(e.status===409 ? 'ほかの所で変更がありました。もう一度保存してください' : '保存できませんでした');
+    renderBar();
+  }
+}
+
+async function start(){
+  if(!LOCAL && (!api.repo || !api.token)) return renderSettings();
+  try{
+    const [weeks, config] = await Promise.all([api.weeks(), api.config()]);
+    S.weeks = weeks;
+    S.appName = config?.appName || '';
+    if(!S.weeks.length){ $('#app').replaceChildren(el('p',{class:'msg'},'下書きがまだありません。')); return }
+    const want = params.get('week');
+    await loadWeek(S.weeks.includes(want) ? want : S.weeks[S.weeks.length-1]);
+  }catch(e){
+    renderSettings(e.status===401 ? 'トークンが正しくないか、期限が切れています。' : e.status===403 ? 'このトークンでは読めません（権限を確認してください）。' : '読み込めませんでした。リポジトリ名を確認してください。');
+  }
+}
+
+$('#week').addEventListener('change',e=>loadWeek(e.target.value));
+$('#save').addEventListener('click',save);
+$('#allOk').addEventListener('click',()=>{
+  if(!S.data) return;
+  let n=0; for(const p of S.data.posts){ const a=approvalOf(p.id); if(!a.status && !S.posted[p.id]){ a.status='ok'; a.decidedAt=new Date().toISOString(); S.dirty.add(p.id); n++ } }
+  toast(n ? `${n}件を OK にしました（保存を押してください）` : '未確認の投稿はありません'); renderWeek();
+});
+$('#setBtn').addEventListener('click',()=>renderSettings());
+$('#helpBtn').addEventListener('click',renderHelp);
+$('#zoom').addEventListener('click',()=>$('#zoom').classList.remove('show'));
+window.addEventListener('beforeunload',e=>{ if(S.dirty.size){ e.preventDefault(); e.returnValue='' } });
+start();
+</script>
+</body>
+</html>
