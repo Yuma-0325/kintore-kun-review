@@ -113,7 +113,7 @@ const store = {
 };
 const params = new URLSearchParams(location.search);
 const LOCAL = params.has('local');
-const KIND = { aruaru:'あるある', story:'コツ', promo:'宣伝' };
+const KIND = { aruaru:'ネタ', story:'コツ', promo:'宣伝' };
 const PLAT = { x:'X', instagram:'Instagram' };
 const WD = ['日','月','火','水','木','金','土'];
 
@@ -305,7 +305,7 @@ function postCard(p){
   card.append(el('div',{class:'top'},
     el('span',{class:`plat ${p.platform}`},PLAT[p.platform]),
     el('span',{class:'chip'},KIND[p.kind]||p.kind),
-    p.funny ? el('span',{class:'chip',title:'Claude の自己採点（10点満点）'},`自己採点 ${p.funny}/10`) : null,
+    p.funny ? el('span',{class:'chip',title:'Claude の自己評価（10点満点）'},`自己評価 ${p.funny}/10`) : null,
     p.suggestedDate ? el('span',{class:'chip warn'},`おすすめ ${md(p.suggestedDate)}`) : null,
     posted ? el('span',{class:'chip posted'},'投稿済み') : null,
     st && !posted ? el('button',{class:'closebtn',style:'margin-left:auto','aria-label':'このカードを折りたたむ',onclick:()=>{ S.open.delete(p.id); renderWeek() }},'たたむ') : null));
